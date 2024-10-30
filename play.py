@@ -4,15 +4,17 @@ import array
 import numpy as np 
 import serial
 import time 
+from gpiozero import LED
 
-serial_port_name = "COM10"
 #filename = 'c:/tmp/Thunder Track.wav'
 filename = 'assets/Thunder Track.wav'
 # Each chunk is ten milliseconds
 chunk_size = int(44100 / 100)
 
-# Open the serial port
-#serial_port = serial.Serial(serial_port_name) 
+# Interface to the GPIO pin
+light_io = LED(23)
+# Initial state
+light_io.off()
 
 # Build the rolling average
 with wave.open(filename) as wav_file:
@@ -73,12 +75,14 @@ while True:
                 else:
                     current_flash_duration = 0.1
                 print("Flash start", current_flash_duration, chunk_max)
+                light_io.on()
         # Look for end of flash
         else:
             if (time.time() - last_flash_start) > current_flash_duration:
                 in_flash = False
                 last_flash_end = time.time()
                 print("Flash end")
+                light_io.off()
 
         stream.write(data)
         data = wf.readframes(chunk_size)
