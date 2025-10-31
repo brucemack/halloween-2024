@@ -2,4 +2,6 @@ pyserial
 matplotlib
 numpy
 pyaudio
+rpi-lgpio
 gpiozero
+
